@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title> My Friends </title>
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to right, #ffecd2, #fcb69f);
+    overflow-x: hidden;
+}
+header {
+    text-align: center;
+    padding: 30px 20px;
+    color: #fff;
+    background: rgba(255, 105, 180, 0.7);
+}
+header h1 {
+    font-size: 3em;
+    margin: 0;
+}
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 30px;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+.album-wrapper {
+    width: 600px;
+    height: 800px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    background: #fff;
+}
+.album-container img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+.album-container img.active {
+    opacity: 1;
+}
+.album-controls {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+.album-controls button {
+    background: rgba(255, 255, 255, 0.4);
+    border: none;
+    color: #ff69b4;
+    font-size: 2em;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+    pointer-events: auto;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+#prev-btn {
+    left: 20px;
+}
+#next-btn {
+    right: 20px;
+}
+.album-controls button:hover {
+    background: rgba(255, 255, 255, 0.7);
+    transform: translateY(-50%) scale(1.2);
+}
+.player {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    width: 350px;
+    text-align: center;
+}
+.controls button {
+    background: #ff69b4;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 30px;
+    font-size: 1em;
+    cursor: pointer;
+}
+.controls button:hover {
+    background: #ff85c1;
+}
+.progress {
+    width: 100%;
+    height: 5px;
+    background: #ddd;
+    margin: 10px 0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: #ff69b4;
+    transition: width 0.3s;
+}
+#love-letter-btn {
+    background: #fff;
+    color: #ff69b4;
+    border: 2px solid #ff69b4;
+}
+#love-letter-btn:hover {
+    background: #ff69b4;
+    color: white;
+}
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    z-index: 10;
+    text-align: center;
+    width: 650px;
+}
+.popup h2 {
+    margin-top: 0;
+    color: #ff69b4;
+}
+.popup button {
+    background: #ff69b4;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+.petal, .spark {
+    position: fixed;
+    z-index: 1;
+    pointer-events: none;
+}
+.spark {
+    width: 5px;
+    height: 5px;
+    background: yellow;
+    border-radius: 50%;
+    opacity: 1;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>💖 Anh Thư Kute 💖</h1>
+    <p>Thư Thân Thiện <3 </p>
+</header>
+
+<div class="main-container">
+    <div class="album-wrapper">
+        <div class="album-container" id="album">
+            <img src="data/anh.jpg" class="active" alt="Ảnh 1">
+            <img src="data/anh2.jpg" alt="Ảnh 2">
+            <img src="data/anh3.jpg" alt="Ảnh 3">
+            <img src="data/anh4.jpg" alt="Ảnh 4">
+            <img src="data/anh5.jpg" alt="Ảnh 5">
+        </div>
+        <div class="album-controls">
+            <button id="prev-btn">&lt;</button>
+            <button id="next-btn">&gt;</button>
+        </div>
+    </div>
+
+    <div class="player">
+        <h2 id="song-title">🎵 My Love Song</h2>
+        <audio id="audio" src="data/song.mp3"></audio>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="controls">
+            <button id="play-btn">▶️ Play</button>
+            <button id="pause-btn">⏸️ Pause</button>
+            <button id="love-letter-btn">💌 Đôi Lời Muốn Nói</button>
+        </div>
+    </div>
+</div>
+
+<div class="popup" id="love-popup">
+    <h2>💌 Gửi đến em 💕</h2>
+    <p>Em à, cảm ơn em đã đồng ý làm bạn với anh,<br>
+	   Những ngày qua, a thật sự rất vui khi được nói chuyện cùng em.<br>
+	   Trong thế giới hơn 8 tỷ người, có lẽ vì duyên phận nên ta mới trở thành bạn của nhau.<br>
+	   Dù sau này có như thế nào chăng nữa, anh cũng sẽ luôn trân trọng điều đó <br>
+	   Anh chúc em luôn luôn xinh đẹp, chúc cho tình bạn của chúng ta mãi trường tồn !<br>
+	                                 ..........
+	</p>
+    <button id="close-popup">Đóng</button>
+</div>
+
+<script>
+const audio = document.getElementById('audio');
+const playBtn = document.getElementById('play-btn');
+const pauseBtn = document.getElementById('pause-btn');
+const progressBar = document.getElementById('progress-bar');
+const loveBtn = document.getElementById('love-letter-btn');
+const popup = document.getElementById('love-popup');
+const closePopup = document.getElementById('close-popup');
+const albumImages = document.querySelectorAll('#album img');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+let index = 0;
+
+window.addEventListener('load', () => {
+    audio.play().catch(() => {});
+});
+
+playBtn.addEventListener('click', () => audio.play());
+pauseBtn.addEventListener('click', () => audio.pause());
+audio.addEventListener('timeupdate', () => {
+    const percent = (audio.currentTime / audio.duration) * 100;
+    progressBar.style.width = percent + '%';
+});
+loveBtn.addEventListener('click', () => popup.style.display = 'block');
+closePopup.addEventListener('click', () => popup.style.display = 'none');
+
+function showImage(i) {
+    albumImages.forEach((img, idx) => img.classList.toggle('active', idx === i));
+}
+prevBtn.addEventListener('click', () => { index = (index - 1 + albumImages.length) % albumImages.length; showImage(index); });
+nextBtn.addEventListener('click', () => { index = (index + 1) % albumImages.length; showImage(index); });
+setInterval(() => { index = (index + 1) % albumImages.length; showImage(index); }, 3000);
+
+// Sakura petals 🌸
+setInterval(() => {
+    const petal = document.createElement('div');
+    petal.classList.add('petal');
+    petal.textContent = '🌸';
+    petal.style.left = Math.random() * 100 + 'vw';
+    petal.style.top = '-10vh';
+    document.body.appendChild(petal);
+    let fall = setInterval(() => {
+        petal.style.top = (parseFloat(petal.style.top) + 1) + 'vh';
+        if (parseFloat(petal.style.top) > 110) { petal.remove(); clearInterval(fall); }
+    }, 50);
+}, 500);
+
+// Fireworks ✨
+function createFirework(x, y) {
+    const count = 20;
+    for (let i = 0; i < count; i++) {
+        const spark = document.createElement('div');
+        spark.classList.add('spark');
+        document.body.appendChild(spark);
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = Math.random() * 100;
+        spark.style.left = `${x}px`;
+        spark.style.top = `${y}px`;
+        const dx = Math.cos(angle) * distance;
+        const dy = Math.sin(angle) * distance;
+        spark.animate([
+            { transform: 'translate(0,0)', opacity: 1 },
+            { transform: `translate(${dx}px,${dy}px)`, opacity: 0 }
+        ], { duration: 1000 + Math.random() * 500, easing: 'ease-out' }).onfinish = () => spark.remove();
+    }
+}
+setInterval(() => {
+    const x = Math.random() * window.innerWidth;
+    const y = Math.random() * window.innerHeight / 2;
+    createFirework(x, y);
+}, 3000);
+</script>
+
+</body>
+</html>
